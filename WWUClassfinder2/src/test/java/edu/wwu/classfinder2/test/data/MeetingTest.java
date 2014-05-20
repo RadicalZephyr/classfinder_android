@@ -15,7 +15,7 @@ public class MeetingTest extends TestCase {
     public void testMeeting() {
         Meeting m = new Meeting(DateTimeConstants.MONDAY,
                                 new LocalTime(13,0),
-                                new Period(50, PeriodType.minutes()));
+                                new Period(0, 50, 0, 0));
 
         Assert.assertEquals("M 01:00-01:50 pm", m.toString());
     }

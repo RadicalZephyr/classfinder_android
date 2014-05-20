@@ -23,43 +23,42 @@ public class ScheduleParserTest extends TestCase {
                   new Meeting[] {
                       new Meeting(DateTimeConstants.MONDAY,
                                   new LocalTime(10,0),
-                                  new Period(50, PeriodType.minutes())),
+                                  new Period(0, 50, 0, 0)),
                       new Meeting(DateTimeConstants.TUESDAY,
                                   new LocalTime(10,0),
-                                  new Period(50, PeriodType.minutes()))});
+                                  new Period(0, 50, 0, 0))});
         cases.put("TR 12:00-01:50 pm",
                   new Meeting[] {
                       new Meeting(DateTimeConstants.TUESDAY,
                                   new LocalTime(12,0),
-                                  new Period(110, PeriodType.minutes())),
+                                  new Period(0, 110, 0, 0)),
                       new Meeting(DateTimeConstants.THURSDAY,
                                   new LocalTime(12,0),
-                                  new Period(110, PeriodType.minutes()))});
+                                  new Period(0, 110, 0, 0))});
         cases.put("T 00:00-04:00 am",
                   new Meeting[] {
                       new Meeting(DateTimeConstants.TUESDAY,
                                   new LocalTime(0,0),
-                                  new Period(4, PeriodType.hours()))});
+                                  new Period(4, 0, 0, 0))});
         cases.put("F 01:50-03:50 pm;S 12:30-12:50 pm",
                   new Meeting[] {
                       new Meeting(DateTimeConstants.FRIDAY,
                                   new LocalTime(13,50),
-                                  new Period(2, PeriodType.hours())),
+                                  new Period(2, 0, 0, 0)),
                       new Meeting(DateTimeConstants.SATURDAY,
                                   new LocalTime(12,30),
-                                  new Period(20, PeriodType.minutes()))});
+                                  new Period(0, 20, 0, 0))});
         cases.put("W 01:00-07:50 pm;U 12:30-01:00 pm;M 02:00-01:00 pm",
                   new Meeting[] {
                       new Meeting(DateTimeConstants.WEDNESDAY,
                                   new LocalTime(13,0),
-                                  new Period((60*6)+50,
-                                              PeriodType.minutes())),
+                                  new Period(6, 50, 0, 0)),
                       new Meeting(DateTimeConstants.SUNDAY,
                                   new LocalTime(12,30),
-                                  new Period(30, PeriodType.minutes())),
+                                  new Period(0, 30, 0, 0)),
                       new Meeting(DateTimeConstants.MONDAY,
                                   new LocalTime(2,0),
-                                  new Period(11, PeriodType.hours()))});
+                                  new Period(11, 0, 0, 0))});
 
         for (Map.Entry<String, Meeting[]> entry : cases.entrySet()) {
             ScheduleParser sp = new ScheduleParser(entry.getKey());
