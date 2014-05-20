@@ -8,11 +8,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import org.threeten.bp.DayOfWeek;
-import org.threeten.bp.Duration;
-import org.threeten.bp.LocalTime;
-
-import org.threeten.bp.temporal.ChronoUnit;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.Period;
+import org.joda.time.LocalTime;
 
 public class Schedule {
 
@@ -59,27 +57,27 @@ public class Schedule {
 
     public static class Meeting {
 
-        private DayOfWeek mDay;
+        private int mDay;
 
         private LocalTime mStartTime;
 
-        private Duration mDuration;
+        private Period mPeriod;
 
-        public Meeting(DayOfWeek day,
+        public Meeting(int day,
                        LocalTime startTime,
-                       Duration duration) {
-            if (day == null)
+                       Period period) {
+            if (day == -1)
                 throw new IllegalArgumentException("Day of week is null.");
             mDay = day;
             if (startTime == null)
                 throw new IllegalArgumentException("Start time is null.");
             mStartTime = startTime;
-            if (duration == null)
-                throw new IllegalArgumentException("Duration is null.");
-            mDuration = duration;
+            if (period == null)
+                throw new IllegalArgumentException("Period is null.");
+            mPeriod = period;
         }
 
-        public DayOfWeek getDay() {
+        public int getDay() {
             return mDay;
         }
 
@@ -87,8 +85,8 @@ public class Schedule {
             return mStartTime;
         }
 
-        public Duration getDuration() {
-            return mDuration;
+        public Period getPeriod() {
+            return mPeriod;
         }
 
         @Override
@@ -102,7 +100,7 @@ public class Schedule {
             return new EqualsBuilder()
                 .append(mDay, oMeeting.mDay)
                 .append(mStartTime, oMeeting.mStartTime)
-                .append(mDuration, oMeeting.mDuration)
+                .append(mPeriod, oMeeting.mPeriod)
                 .isEquals();
         }
 
@@ -111,7 +109,7 @@ public class Schedule {
             return new HashCodeBuilder(17, 31)
                 .append(mDay)
                 .append(mStartTime)
-                .append(mDuration)
+                .append(mPeriod)
                 .toHashCode();
         }
 
@@ -119,30 +117,38 @@ public class Schedule {
         public String toString() {
             char dayChar;
             switch (mDay) {
-            case SUNDAY:    dayChar = 'U';
+            case DateTimeConstants.SUNDAY:
+                dayChar = 'U';
                 break;
-            case MONDAY:    dayChar = 'M';
+            case DateTimeConstants.MONDAY:
+                dayChar = 'M';
                 break;
-            case TUESDAY:   dayChar = 'T';
+            case DateTimeConstants.TUESDAY:
+                dayChar = 'T';
                 break;
-            case WEDNESDAY: dayChar = 'W';
+            case DateTimeConstants.WEDNESDAY:
+                dayChar = 'W';
                 break;
-            case THURSDAY:  dayChar = 'R';
+            case DateTimeConstants.THURSDAY:
+                dayChar = 'R';
                 break;
-            case FRIDAY:    dayChar = 'F';
+            case DateTimeConstants.FRIDAY:
+                dayChar = 'F';
                 break;
-            case SATURDAY:  dayChar = 'S';
+            case DateTimeConstants.SATURDAY:
+                dayChar = 'S';
                 break;
-            default: dayChar = 'X';
+            default:
+                dayChar = 'X';
                 break;
             }
 
             LocalTime start = mStartTime;
             String amOrPm;
-            LocalTime end = start.plus(mDuration);
-            LocalTime onePm = LocalTime.NOON.plusHours(1);
+            LocalTime end = start.plus(mPeriod);
+            LocalTime onePm = LocalTime.MIDNIGHT.plusHours(13);
 
-            if (end.isAfter(LocalTime.NOON)) {
+            if (end.isAfter(LocalTime.MIDNIGHT.plusHours(12))) {
                 amOrPm = "pm";
                 if (start.isAfter(onePm))
                     start = start.minusHours(12);

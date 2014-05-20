@@ -8,9 +8,9 @@ import junit.framework.TestCase;
 import edu.wwu.classfinder2.data.Schedule;
 import edu.wwu.classfinder2.data.Schedule.Meeting;
 
-import org.threeten.bp.DayOfWeek;
-import org.threeten.bp.Duration;
-import org.threeten.bp.LocalTime;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.Period;
+import org.joda.time.LocalTime;
 
 public class ScheduleTest extends TestCase {
 
@@ -26,7 +26,7 @@ public class ScheduleTest extends TestCase {
 
         Assert.assertNotNull("The meeting shouldn't be null.", meeting);
         Assert.assertEquals("Meeting is on Monday.",
-                            DayOfWeek.MONDAY, meeting.getDay());
+                            DateTimeConstants.MONDAY, meeting.getDay());
 
     }
 

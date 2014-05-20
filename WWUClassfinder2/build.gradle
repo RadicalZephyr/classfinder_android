@@ -70,7 +70,7 @@ dependencies {
             'com.android.support:support-v13:18.0.+',
             'org.apache.commons:commons-lang3:3.3.2',
             'org.apache.commons:commons-collections4:4.0',
-            'org.threeten:threetenbp:0.9'
+            'net.danlew:android.joda:2.3.3'
     
     // Espresso
     androidTestCompile files('lib/espresso-1.1.jar', 

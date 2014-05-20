@@ -5,11 +5,9 @@ import edu.wwu.classfinder2.data.Schedule.Meeting;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.threeten.bp.DayOfWeek;
-import org.threeten.bp.Duration;
-import org.threeten.bp.LocalTime;
-
-import org.threeten.bp.temporal.ChronoUnit;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.Period;
+import org.joda.time.LocalTime;
 
 public class ScheduleParser
     implements Iterable<Meeting> {
@@ -40,7 +38,7 @@ public class ScheduleParser
 
         private String mCurrentDays;
         private LocalTime mCurrentStartTime;
-        private Duration mCurrentDuration;
+        private Period mCurrentPeriod;
 
         @Override
         public boolean hasNext() {
@@ -56,7 +54,7 @@ public class ScheduleParser
             // Initialize the current strings
             if (mCurrentDays == null
                 || mCurrentStartTime == null
-                || mCurrentDuration == null) {
+                || mCurrentPeriod == null) {
                 String curSchedule = mScheduleStrs[mListIndex];
                 int index = curSchedule.indexOf(' ');
                 mCurrentDays = curSchedule.substring(0, index);
@@ -71,13 +69,13 @@ public class ScheduleParser
 
             Meeting meeting = new Meeting(dayFromCharacter(dayChar),
                                           mCurrentStartTime,
-                                          mCurrentDuration);
+                                          mCurrentPeriod);
 
-            // Check if out of days for current time and duration
+            // Check if out of days for current time and period
             if (mDayIndex >= mCurrentDays.length()) {
                 mCurrentDays      = null;
                 mCurrentStartTime = null;
-                mCurrentDuration  = null;
+                mCurrentPeriod  = null;
                 // and go to next list element
                 mListIndex++;
                 mDayIndex = 0;
@@ -91,15 +89,15 @@ public class ScheduleParser
             throw new UnsupportedOperationException();
         }
 
-        private DayOfWeek dayFromCharacter(char dayChar) {
+        private int dayFromCharacter(char dayChar) {
             switch (dayChar) {
-            case 'U': return DayOfWeek.SUNDAY;
-            case 'M': return DayOfWeek.MONDAY;
-            case 'T': return DayOfWeek.TUESDAY;
-            case 'W': return DayOfWeek.WEDNESDAY;
-            case 'R': return DayOfWeek.THURSDAY;
-            case 'F': return DayOfWeek.FRIDAY;
-            case 'S': return DayOfWeek.SATURDAY;
+            case 'U': return DateTimeConstants.SUNDAY;
+            case 'M': return DateTimeConstants.MONDAY;
+            case 'T': return DateTimeConstants.TUESDAY;
+            case 'W': return DateTimeConstants.WEDNESDAY;
+            case 'R': return DateTimeConstants.THURSDAY;
+            case 'F': return DateTimeConstants.FRIDAY;
+            case 'S': return DateTimeConstants.SATURDAY;
             default:
                 throw new IllegalArgumentException(String
                                                    .format("dayChar: %c",
@@ -107,15 +105,15 @@ public class ScheduleParser
             }
         }
 
-        private void timeFromString(String durationString) {
-            int durStringLen = durationString.length();
+        private void timeFromString(String periodString) {
+            int durStringLen = periodString.length();
 
-            char amPm = durationString.charAt(durStringLen-2);
+            char amPm = periodString.charAt(durStringLen-2);
 
             // Remove the " {a,p}m" from the end, and split on
             // the "-".
             String[] startAndEndTime =
-                durationString.substring(0, durStringLen-3)
+                periodString.substring(0, durStringLen-3)
                 .split("-");
 
             mCurrentStartTime = LocalTime.parse(startAndEndTime[0]);
@@ -144,9 +142,10 @@ public class ScheduleParser
                 // These are effectively only testing for the 12-1 pm
                 // weirdness.  Because anything from 01:00 to 11:59 pm
                 // will be parsed as "before" noon.
-                if (mCurrentStartTime.isAfter(LocalTime.NOON))
+                if (mCurrentStartTime.isAfter(LocalTime.MIDNIGHT
+                                              .plusHours(12)))
                     startShouldAdd = false;
-                if (endTime.isAfter(LocalTime.NOON))
+                if (endTime.isAfter(LocalTime.MIDNIGHT.plusHours(12)))
                     endShouldAdd = false;
 
                 if (startShouldAdd)
@@ -155,8 +154,8 @@ public class ScheduleParser
                     endTime = endTime.plusHours(12);
             }
 
-            mCurrentDuration = Duration.between(mCurrentStartTime,
-                                                endTime);
+            mCurrentPeriod = new Period(mCurrentStartTime,
+                                        endTime);
         }
 
     }
