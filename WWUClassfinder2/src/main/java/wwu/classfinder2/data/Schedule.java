@@ -161,8 +161,8 @@ public class Schedule {
 
             return String.format("%c %s-%s %s",
                                  dayChar,
-                                 start.toString(),
-                                 end.toString(),
+                                 start.toString("HH:mm"),
+                                 end.toString("HH:mm"),
                                  amOrPm);
         }
     }
