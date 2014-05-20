@@ -146,9 +146,11 @@ public class Schedule {
             LocalTime start = mStartTime;
             String amOrPm;
             LocalTime end = start.plus(mPeriod);
-            LocalTime onePm = LocalTime.MIDNIGHT.plusHours(13);
+            LocalTime onePm =
+                LocalTime.MIDNIGHT.plusHours(12).plusMinutes(59);
 
-            if (end.isAfter(LocalTime.MIDNIGHT.plusHours(12))) {
+            if (end.isAfter(LocalTime.MIDNIGHT
+                            .plusHours(11).plusMinutes(59))) {
                 amOrPm = "pm";
                 if (start.isAfter(onePm))
                     start = start.minusHours(12);
